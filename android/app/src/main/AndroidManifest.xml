@@ -1,0 +1,70 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.example.doct_appointment">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <application
+            android:name="${applicationName}"
+            android:label="doct_appointment"
+            android:icon="@mipmap/ic_launcher">
+
+        <!-- OAuth Redirect Activity -->
+        <activity android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+                  android:excludeFromRecents="true"
+                  android:exported="false"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- Main Activity -->
+        <activity
+                android:name=".MainActivity"
+                android:exported="true"
+                android:launchMode="singleTop"
+                android:theme="@style/LaunchTheme"
+                android:hardwareAccelerated="true"
+                android:windowSoftInputMode="adjustResize"
+                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
+            <meta-data
+                    android:name="io.flutter.embedding.android.NormalTheme"
+                    android:resource="@style/NormalTheme" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Firebase Auth redirect -->
+        <activity android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.googleusercontent.apps.108943094326-66fjgk4n0o4scrm1aurff4tv92m5d5t0" />
+            </intent-filter>
+        </activity>
+
+        <!-- Meta-data for Google Services -->
+        <meta-data
+                android:name="com.google.android.gms.auth.api.signin.v2.idTokenRequested"
+                android:value="true" />
+        <meta-data
+                android:name="com.google.android.gms.client_id"
+                android:value="108943094326-66fjgk4n0o4scrm1aurff4tv92m5d5t0.apps.googleusercontent.com" />
+        <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        <meta-data
+                android:name="flutterEmbedding"
+                android:value="2" />
+    </application>
+
+    <!-- Optional queries -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>
