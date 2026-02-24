@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:doct_appointment/widgets/location.dart';
 import 'package:doct_appointment/widgets/specialist_page.dart';
 import 'package:geocoding/geocoding.dart';
-
+import 'package:doct_appointment/widgets/all_specialist_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -359,6 +359,8 @@ class _HomePageState extends State<HomePage> {
                     OutlinedButton(
                       onPressed: () {
                         // Handle view all specialities
+                        Navigator.push(context, MaterialPageRoute(
+                            builder:(context) => const AllSpecialistPage(),),);
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.cyan,
