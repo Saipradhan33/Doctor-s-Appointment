@@ -13,7 +13,7 @@ class SpecialistPage extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(12),
-        itemCount: 5, // temporary dummy doctors
+        itemCount: 2, // temporary dummy doctors
         itemBuilder: (context, index) {
           return Card(
             elevation: 3,

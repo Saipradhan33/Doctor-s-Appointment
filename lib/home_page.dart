@@ -53,40 +53,40 @@ class _HomePageState extends State<HomePage> {
   // Health concerns data for the row
   final List<HealthConcern> _healthConcerns = [
     HealthConcern(
-      title: 'Period doubts or\nPregnancy',
-      icon: Icons.female,
-      color: Color(0xFFE8F4FD),
-      iconColor: Color(0xFF4A90E2),
-    ),
-    HealthConcern(
-      title: 'Acne, pimple or\nskin issues',
-      icon: Icons.face,
-      color: Color(0xFFFFF4E6),
-      iconColor: Color(0xFFFF8C42),
-    ),
-    HealthConcern(
-      title: 'Performance\nissues in bed',
-      icon: Icons.favorite,
-      color: Color(0xFFFFE8F1),
-      iconColor: Color(0xFFE91E63),
-    ),
-    HealthConcern(
-      title: 'Cold, cough or\nfever',
+      title: 'Tooth pain or\nsensitivity',
       icon: Icons.sick,
-      color: Color(0xFFE8F8F5),
-      iconColor: Color(0xFF26A69A),
+      color: Color(0xFFE3F2FD),
+      iconColor: Color(0xFF1976D2),
     ),
     HealthConcern(
-      title: 'Child not feeling\nwell',
-      icon: Icons.child_care,
+      title: 'Cavities or\nbleeding gums',
+      icon: Icons.medical_services,
+      color: Color(0xFFE8F5E9),
+      iconColor: Color(0xFF2E7D32),
+    ),
+    HealthConcern(
+      title: 'Teeth whitening\nor smile design',
+      icon: Icons.auto_awesome,
       color: Color(0xFFFFF8E1),
-      iconColor: Color(0xFFFFA726),
+      iconColor: Color(0xFFF9A825),
     ),
     HealthConcern(
-      title: 'Depression or\nanxiety',
-      icon: Icons.psychology,
-      color: Color(0xFFF3E5F5),
-      iconColor: Color(0xFF9C27B0),
+      title: 'Braces or teeth\nalignment',
+      icon: Icons.straighten,
+      color: Color(0xFFEDE7F6),
+      iconColor: Color(0xFF6A1B9A),
+    ),
+    HealthConcern(
+      title: 'Missing tooth or\nimplants',
+      icon: Icons.health_and_safety,
+      color: Color(0xFFE0F7FA),
+      iconColor: Color(0xFF00838F),
+    ),
+    HealthConcern(
+      title: 'Same day crown\nor emergency',
+      icon: Icons.flash_on,
+      color: Color(0xFFFFEBEE),
+      iconColor: Color(0xFFC62828),
     ),
   ];
 
@@ -286,7 +286,7 @@ class _HomePageState extends State<HomePage> {
                               focusNode: _searchFocusNode,
                               onChanged: _filterSpecialists,
                               decoration: InputDecoration(
-                                hintText: "Search doctors, clinics...",
+                                hintText: "Search doctors & treatments...",
                                 prefixIcon: Icon(Icons.search, color: Colors.grey),
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.symmetric(vertical: 14),

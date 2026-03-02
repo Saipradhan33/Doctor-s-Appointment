@@ -48,15 +48,15 @@ class HomeBanner extends StatelessWidget {
                 // Features row
                 Row(
                   children: const [
-                    Icon(Icons.verified, size: 16),
+                    Icon(Icons.verified, size: 6),
                     SizedBox(width: 4),
                     Text("Verified Doctors"),
                     SizedBox(width: 12),
-                    Icon(Icons.receipt_long, size: 16),
+                    Icon(Icons.receipt_long, size: 6),
                     SizedBox(width: 4),
                     Text("Digital Prescription"),
                     SizedBox(width: 12),
-                    Icon(Icons.chat_bubble_outline, size: 16),
+                    Icon(Icons.chat_bubble_outline, size: 6),
                     SizedBox(width: 4),
                     Text("Free Followup"),
                   ],
@@ -65,14 +65,14 @@ class HomeBanner extends StatelessWidget {
             ),
           ),
 
-          // Right side (Image)
-          // Expanded(
-          //   flex: 1,
-          //   child: Image.asset(
-          //     "assets/images/Screenshot 2025-09-15 164403.png", // your doctor lady image
-          //     fit: BoxFit.contain,
-          //   ),
-          // ),
+          //Right side (Image)
+          Expanded(
+            flex: 1,
+            child: Image.asset(
+              "assets/images/image1.png", // your doctor lady image
+              fit: BoxFit.contain,
+            ),
+          ),
         ],
       ),
     );

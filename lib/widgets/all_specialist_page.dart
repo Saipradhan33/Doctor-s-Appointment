@@ -7,40 +7,52 @@ class AllSpecialistPage extends StatelessWidget {
 
   final List<Map<String, dynamic>> specialties = const [
     {
-      "name": "Gynaecology",
-      "price": "₹499",
-      "icon": Icons.pregnant_woman,
-      "color": Color(0xFFE8F4FD),
-    },
-    {
-      "name": "Sexology",
-      "price": "₹499",
-      "icon": Icons.favorite,
-      "color": Color(0xFFFFE8F1),
-    },
-    {
-      "name": "General physician",
-      "price": "₹399",
+      "name": "Root Canal Treatment",
+      "price": "₹2,999",
       "icon": Icons.medical_services,
-      "color": Color(0xFFE8F8F5),
+      "color": Color(0xFFE3F2FD),
     },
     {
-      "name": "Dermatology",
-      "price": "₹449",
-      "icon": Icons.face,
-      "color": Color(0xFFFFF4E6),
+      "name": "Dental Implants",
+      "price": "₹24,999",
+      "icon": Icons.health_and_safety,
+      "color": Color(0xFFE8F5E9),
     },
     {
-      "name": "Psychiatry",
-      "price": "₹499",
-      "icon": Icons.psychology,
-      "color": Color(0xFFF3E5F5),
-    },
-    {
-      "name": "Stomach & digestion",
-      "price": "₹399",
-      "icon": Icons.monitor_heart,
+      "name": "Teeth Whitening",
+      "price": "₹4,499",
+      "icon": Icons.auto_awesome,
       "color": Color(0xFFFFF8E1),
+    },
+    {
+      "name": "Child Dentistry",
+      "price": "₹1,499",
+      "icon": Icons.child_care,
+      "color": Color(0xFFFFEBEE),
+    },
+    {
+      "name": "Orthodontics",
+      "price": "₹19,999",
+      "icon": Icons.straighten,
+      "color": Color(0xFFEDE7F6),
+    },
+    {
+      "name": "Crown And Bridges",
+      "price": "₹6,999",
+      "icon": Icons.build_circle,
+      "color": Color(0xFFE0F7FA),
+    },
+    {
+      "name": "Laser Dentistry",
+      "price": "₹5,999",
+      "icon": Icons.flash_on,
+      "color": Color(0xFFFFF3E0),
+    },
+    {
+      "name": "Dentures",
+      "price": "₹8,999",
+      "icon": Icons.mood,
+      "color": Color(0xFFF3E5F5),
     },
   ];
   final List<String> bannerImages = const[
