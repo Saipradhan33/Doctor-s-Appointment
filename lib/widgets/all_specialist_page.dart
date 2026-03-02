@@ -1,3 +1,4 @@
+import 'package:doct_appointment/widgets/main_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'specialist_page.dart';
@@ -64,9 +65,7 @@ class AllSpecialistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("25+ Specialities"),
-      ),
+      appBar: MainNavBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
