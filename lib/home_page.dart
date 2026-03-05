@@ -1,5 +1,6 @@
 import 'package:doct_appointment/widgets/appt.dart';
 import 'package:doct_appointment/widgets/app_form.dart';
+import 'package:doct_appointment/widgets/oral_health_progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:doct_appointment/widgets/location.dart';
@@ -214,6 +215,9 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
+
+                      const ToothProgress(),
+                      SizedBox(height: 20,),
 
                       // 🔥 Modern Search Container
                       Container(
