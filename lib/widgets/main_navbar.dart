@@ -8,6 +8,7 @@ class MainNavBar extends StatelessWidget implements PreferredSizeWidget {
     final width = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Container(
+        height: 80,
         padding: EdgeInsets.symmetric(
           horizontal: width < 600 ? 16 : 40,
           vertical: 12,

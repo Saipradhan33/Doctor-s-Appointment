@@ -30,7 +30,7 @@ class _App_formState extends State<App_form>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 2),
     );
 
     _animation = Tween<double>(begin: -10, end: 10).animate(

@@ -357,20 +357,20 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     OutlinedButton(
-                      onPressed: () {
-                        // Handle view all specialities
-                        Navigator.push(context, MaterialPageRoute(
-                            builder:(context) => const AllSpecialistPage(),),);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.cyan,
-                        side: const BorderSide(color: Colors.cyan),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        onPressed: () {
+                          // Handle view all specialities
+                          Navigator.push(context, MaterialPageRoute(
+                              builder:(context) => const AllSpecialistPage(),),);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.cyan,
+                          side: const BorderSide(color: Colors.cyan),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
+                        child: const Text('View All Specialities'),
                       ),
-                      child: const Text('View All Specialities'),
-                    ),
                   ],
                 ),
 
@@ -438,7 +438,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 8),
-            Text(
+            TextButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => App_form())
+                );
+              },
+              child: Text(
               'CONSULT NOW',
               style: TextStyle(
                 fontSize: 11,
@@ -446,6 +451,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.cyan,
                 letterSpacing: 0.5,
               ),
+              )
             ),
           ],
         ),
