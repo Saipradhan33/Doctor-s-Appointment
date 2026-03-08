@@ -1,3 +1,4 @@
+import 'package:doct_appointment/widgets/appointment_section.dart';
 import 'package:doct_appointment/widgets/appt.dart';
 import 'package:doct_appointment/widgets/app_form.dart';
 import 'package:doct_appointment/widgets/oral_health_progress.dart';
@@ -149,17 +150,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('MedPlan'),
-        leading: Builder(
-          builder: (context) => IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: Icon(Icons.menu),
-          ),
-        ),
-      ),
       drawerEnableOpenDragGesture: true,
       drawer: Drawer(
         child: Column(
@@ -205,196 +195,195 @@ class _HomePageState extends State<HomePage> {
             _showDropdown = false;
           });
         },
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
+        child: CustomScrollView(
+          slivers: [
 
-                      const ToothProgress(),
-                      SizedBox(height: 20,),
+            /// 🔵 COLLAPSING HEADER
+            SliverAppBar(
+              expandedHeight: 275,
+              pinned: true,
+              backgroundColor: Colors.,
+              floating: false,
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              title: const Text("MedPlan"),
+              leading: Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
+              ),
 
-                      // 🔥 Modern Search Container
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 120, 16, 10),
+                  child: SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
 
-                            // 📍 Location Field
-                            GestureDetector(
-                              onTap: () async {
-                                try {
-                                  final position = await LocationService.getCurrentLocation();
+                        /// Tooth progress
+                        const ToothProgress(),
 
-                                  List<Placemark> placemarks = await placemarkFromCoordinates(
-                                    position!.latitude,
-                                    position.longitude,
-                                  );
+                        const SizedBox(height: 12),
 
-                                  Placemark place = placemarks[0];
-
-                                  setState(() {
-                                    _lat = position.latitude;
-                                    _lng = position.longitude;
-
-                                    _locationController.text =
-                                    "${place.locality}, ${place.administrativeArea}";
-                                  });
-
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Location Permission Denied")),
-                                  );
-                                }
-                              }
-                              ,
-                              child: AbsorbPointer(
-                                child: TextField(
-                                  controller: _locationController,
-                                  decoration: InputDecoration(
-                                    hintText: "Select Location",
-                                    prefixIcon:
-                                    Icon(Icons.location_on, color: Colors.redAccent),
-                                    suffixIcon: Icon(Icons.my_location,
-                                        color: Colors.grey.shade600),
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                            Divider(height: 10,),
-
-                            // 🔍 Search Field
-                            TextField(
-                              controller: _searchController,
-                              focusNode: _searchFocusNode,
-                              onChanged: _filterSpecialists,
-                              decoration: InputDecoration(
-                                hintText: "Search doctors & treatments...",
-                                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(vertical: 14),
-                              ),
-                            ),
-
-                      // 🔽 Dropdown
-                      if (_showDropdown && _filteredSpecialists.isNotEmpty)
+                        /// LOCATION
                         Container(
-                          constraints: BoxConstraints(maxHeight: 200),
-                          margin: EdgeInsets.only(top: 6),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black26,
+                                color: Colors.black12,
                                 blurRadius: 6,
                               ),
                             ],
                           ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _filteredSpecialists.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                leading: Icon(Icons.medical_services,
-                                    color: Colors.cyan),
-                                title: Text(_filteredSpecialists[index]),
-                                onTap: () =>
-                                    _selectSpecialist(_filteredSpecialists[index]),
-                              );
+                          child: GestureDetector(
+                            onTap: () async {
+                              try {
+                                final position =
+                                await LocationService.getCurrentLocation();
+
+                                List<Placemark> placemarks =
+                                await placemarkFromCoordinates(
+                                  position!.latitude,
+                                  position.longitude,
+                                );
+
+                                Placemark place = placemarks[0];
+
+                                setState(() {
+                                  _lat = position.latitude;
+                                  _lng = position.longitude;
+
+                                  _locationController.text =
+                                  "${place.locality}, ${place.administrativeArea}";
+                                });
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                      Text("Location Permission Denied")),
+                                );
+                              }
                             },
+                            child: AbsorbPointer(
+                              child: TextField(
+                                controller: _locationController,
+                                decoration: InputDecoration(
+                                  hintText: "Select Location",
+                                  prefixIcon: const Icon(Icons.location_on,
+                                      color: Colors.redAccent),
+                                  suffixIcon: Icon(Icons.my_location,
+                                      color: Colors.grey.shade600),
+                                  border: InputBorder.none,
+                                  contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                    ],
+
+                        const SizedBox(height: 8),
+
+                        /// SEARCH
+                        TextField(
+                          controller: _searchController,
+                          focusNode: _searchFocusNode,
+                          onChanged: _filterSpecialists,
+                          decoration: const InputDecoration(
+                            hintText: "Search doctors & treatments...",
+                            prefixIcon: Icon(Icons.search),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              ),
+            ),
 
-
-                const SizedBox(height: 30),
-
-                // Header Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            /// 🔵 REST OF PAGE
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Consult top doctors online for any health concern',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+
+                    const SizedBox(height: 20),
+
+                    /// Header
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Consult top doctors online for any health concern',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Private online consultations with verified doctors',
+                                style: TextStyle(
+                                    color: Colors.grey.shade600),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Private online consultations with verified doctors in all specialists',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                const AllSpecialistPage(),
+                              ),
+                            );
+                          },
+                          child: const Text("View All Specialities"),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// Health concerns
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: _healthConcerns.map((concern) {
+                          return Padding(
+                            padding:
+                            const EdgeInsets.only(right: 16),
+                            child:
+                            _buildHealthConcernCard(concern),
+                          );
+                        }).toList(),
                       ),
                     ),
-                    OutlinedButton(
-                        onPressed: () {
-                          // Handle view all specialities
-                          Navigator.push(context, MaterialPageRoute(
-                              builder:(context) => const AllSpecialistPage(),),);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.cyan,
-                          side: const BorderSide(color: Colors.cyan),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text('View All Specialities'),
-                      ),
+
+                    const SizedBox(height: 30),
+
+                    const AppointmentSection(),
                   ],
                 ),
-
-                const SizedBox(height: 20),
-
-                // Health Concerns Row
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: _healthConcerns.map((concern) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: _buildHealthConcernCard(concern),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
