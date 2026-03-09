@@ -1,3 +1,4 @@
+import 'package:doct_appointment/pages/treatment_details.dart';
 import 'package:doct_appointment/widgets/appointment_section.dart';
 import 'package:doct_appointment/widgets/appt.dart';
 import 'package:doct_appointment/widgets/app_form.dart';
@@ -202,7 +203,7 @@ class _HomePageState extends State<HomePage> {
             SliverAppBar(
               expandedHeight: 275,
               pinned: true,
-              backgroundColor: Colors.,
+              backgroundColor: Colors.white,
               floating: false,
               surfaceTintColor: Colors.transparent,
               elevation: 0,
@@ -330,14 +331,14 @@ class _HomePageState extends State<HomePage> {
                             CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Consult top doctors online for any health concern',
+                                'No1 Trusted Dental Clinic in Bhubaneswar 🦷',
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Private online consultations with verified doctors',
+                                'Private consultations with Verified doctors',
                                 style: TextStyle(
                                     color: Colors.grey.shade600),
                               ),
@@ -393,7 +394,15 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         // Handle concern tap
-        print('Tapped on: ${concern.title}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => TreatmentDetailPage(
+              title: concern.title,
+              icon: concern.icon,
+            ),
+          ),
+        );
       },
       child: Container(
         width: 160,
@@ -406,17 +415,20 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                concern.icon,
-                color: concern.iconColor,
-                size: 30,
+            Hero(
+              tag: concern.title,
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  concern.icon,
+                  color: concern.iconColor,
+                  size: 30,
+                ),
               ),
             ),
             SizedBox(height: 12),

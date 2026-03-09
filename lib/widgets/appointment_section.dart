@@ -1,3 +1,4 @@
+import 'package:doct_appointment/widgets/app_form.dart';
 import 'package:flutter/material.dart';
 class AppointmentSection extends StatelessWidget {
   const AppointmentSection({super.key});
@@ -195,7 +196,11 @@ class AppointmentSection extends StatelessWidget {
                       ),
                       backgroundColor: Colors.indigo,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const App_form()
+                      )
+                      );
+                    },
                     child: const Text("Book Now", style: TextStyle(color: Colors.white),),
                   ),
                 )
