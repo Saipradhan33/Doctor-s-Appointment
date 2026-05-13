@@ -1,14 +1,15 @@
-import 'package:doct_appointment/pages/treatment_details.dart';
-import 'package:doct_appointment/widgets/appointment_section.dart';
-import 'package:doct_appointment/widgets/appt.dart';
-import 'package:doct_appointment/widgets/app_form.dart';
-import 'package:doct_appointment/widgets/oral_health_progress.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:doct_appointment/features/treatment/pages/treatment_details.dart';
+import 'package:doct_appointment/features/appointments/widgets/appointment_section.dart';
+import 'package:doct_appointment/features/appointments/widgets/appt.dart';
+import 'package:doct_appointment/features/appointments/widgets/app_form.dart';
+import 'package:doct_appointment/features/dashboard/widgets/oral_health_progress.dart';
+import 'package:doct_appointment/core/services/supabase_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:doct_appointment/widgets/location.dart';
-import 'package:doct_appointment/widgets/specialist_page.dart';
+import 'package:doct_appointment/features/dashboard/widgets/location.dart';
+import 'package:doct_appointment/features/treatment/widgets/specialist_page.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:doct_appointment/widgets/all_specialist_page.dart';
+import 'package:doct_appointment/features/treatment/widgets/all_specialist_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final user = FirebaseAuth.instance.currentUser;
+  final user = SupabaseService.client.auth.currentUser;
   final border = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(20)));
 
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   signout() async {
-    await FirebaseAuth.instance.signOut();
+    await SupabaseService.client.auth.signOut();
   }
 
   @override
@@ -156,12 +157,12 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text('${user?.displayName}'),
+              accountName: Text('${user?.userMetadata?['full_name'] ?? 'User'}'),
               accountEmail: Text('${user?.email}'),
               currentAccountPicture: CircleAvatar(
                 radius: 50,
                 backgroundImage: NetworkImage(
-                    FirebaseAuth.instance.currentUser?.photoURL ?? ''),
+                    user?.userMetadata?['avatar_url'] ?? ''),
               ),
             ),
             ListTile(

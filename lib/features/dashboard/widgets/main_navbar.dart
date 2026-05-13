@@ -1,4 +1,4 @@
-import 'package:doct_appointment/home_page.dart';
+import 'package:doct_appointment/features/dashboard/pages/home_page.dart';
 import 'package:flutter/material.dart';
 class MainNavBar extends StatelessWidget implements PreferredSizeWidget {
   const MainNavBar({super.key});

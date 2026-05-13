@@ -1,7 +1,7 @@
-import 'package:doct_appointment/widgets/main_navbar.dart';
+import 'package:doct_appointment/features/dashboard/widgets/main_navbar.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:doct_appointment/core/services/supabase_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class App_form extends StatefulWidget {
   const App_form({super.key});
@@ -74,27 +74,33 @@ class _App_formState extends State<App_form>
 
   void _submitAppointment() async {
     if (_formKey.currentState!.validate() && selectedDate != null) {
-      final currentUser = FirebaseAuth.instance.currentUser;
+      final user = SupabaseService.client.auth.currentUser;
 
-      await FirebaseFirestore.instance.collection('appointments').add({
-        'doctorName': doctorController.text,
-        'patientName': patientController.text,
-        'description': descriptionController.text,
-        'date': Timestamp.fromDate(selectedDate!),
-        'userId': currentUser?.uid ?? 'anonymous',
-      });
+      try {
+        await SupabaseService.client.from('appointments').insert({
+          'doctor_name': doctorController.text,
+          'patient_name': patientController.text,
+          'notes': descriptionController.text,
+          'scheduled_at': selectedDate!.toIso8601String(),
+          // We can link the patient_id later once we have the patients table populated
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Appointment booked successfully!')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Appointment booked successfully!')),
+        );
 
-      doctorController.clear();
-      patientController.clear();
-      descriptionController.clear();
+        doctorController.clear();
+        patientController.clear();
+        descriptionController.clear();
 
-      setState(() {
-        selectedDate = null;
-      });
+        setState(() {
+          selectedDate = null;
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
 

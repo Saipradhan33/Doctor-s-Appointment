@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doct_appointment/core/services/supabase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Appt extends StatefulWidget {
   const Appt({super.key});
@@ -21,33 +22,35 @@ class _ApptState extends State<Appt> {
             const Text('Available Appointments',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('appointments')
-                  .orderBy('date')
-                  .snapshots(),
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: SupabaseService.client
+                  .from('appointments')
+                  .stream(primaryKey: ['id'])
+                  .order('scheduled_at'),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
 
-                final appointments = snapshot.data!.docs;
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Text('No appointments found.');
+                }
+
+                final appointments = snapshot.data!;
 
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: appointments.length,
                   itemBuilder: (context, index) {
-                    final data =
-                    appointments[index].data() as Map<String, dynamic>;
-                    final timestamp = data['date'] as Timestamp;
-                    final date = timestamp.toDate();
+                    final data = appointments[index];
+                    final date = DateTime.parse(data['scheduled_at']);
 
                     return Card(
                       child: ListTile(
-                        title: Text(data['doctorName'] ?? 'Unknown Doctor'),
+                        title: Text(data['doctor_name'] ?? 'Unknown Doctor'),
                         subtitle: Text(
-                            '${data['patientName'] ?? ''}\n${date.toLocal()}'
+                            '${data['patient_name'] ?? ''}\n${date.toLocal()}'
                                 .split(' ')[0]),
                       ),
                     );

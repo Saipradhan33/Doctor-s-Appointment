@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:doct_appointment/core/services/supabase_service.dart';
+import 'gradient_panel.dart';
 import 'sign_in_form.dart';
 import 'sign_up_form.dart';
-import 'gradient_panel.dart';
 
 class Authpage extends StatefulWidget {
   const Authpage({super.key});
@@ -13,7 +14,6 @@ class Authpage extends StatefulWidget {
 class _AuthpageState extends State<Authpage> {
   bool showSignUp = false;
 
-  // Controllers (shared + sign up)
   final email = TextEditingController();
   final password = TextEditingController();
   final name = TextEditingController();
@@ -21,38 +21,58 @@ class _AuthpageState extends State<Authpage> {
 
   Future<void> signin() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await SupabaseService.client.auth.signInWithPassword(
         email: email.text.trim(),
         password: password.text.trim(),
       );
-      // Navigator.pushReplacement(context, '/home' as Route<Object?>);
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Sign in failed')));
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login error: $e")));
+    }
+  }
+
+  Future<void> signInWithSupabaseMagicLink() async {
+    if (email.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter email for magic link")));
+      return;
+    }
+    try {
+      await SupabaseService.client.auth.signInWithOtp(
+        email: email.text.trim(),
+        emailRedirectTo: 'io.supabase.flutterquickstart://login-callback/',
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Magic link sent to your email!")),
+        );
+      }
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
   Future<void> signup() async {
     if (password.text.trim() != confirm.text.trim()) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Passwords don't match")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Passwords don't match")));
       return;
     }
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await SupabaseService.client.auth.signUp(
         email: email.text.trim(),
         password: password.text.trim(),
+        data: {
+          'full_name': name.text.trim(),
+          'role': 'patient', 
+        },
       );
-      // Navigator.pushReplacement(context, '/home' as Route<Object?>);
-      await FirebaseAuth.instance.currentUser?.updateDisplayName(
-        name.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Sign up failed')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Check your email for confirmation!")),
+        );
+      }
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
@@ -68,31 +88,21 @@ class _AuthpageState extends State<Authpage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final screenWidth = size.width;
-    final screenHeight = size.height;
-    final isMobile = screenWidth < 600;
+    final isMobile = size.width < 600;
 
     // Shared border
     const border = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.black54),
-      borderRadius: BorderRadius.horizontal(
-        left: Radius.circular(50),
-        right: Radius.circular(50),
-      ),
+      borderRadius: BorderRadius.all(Radius.circular(50)),
     );
 
-    // Layout metrics
-    final shellHeight = isMobile ? screenHeight * 0.8 : screenHeight * 0.7;
-    double shellWidth =
-        isMobile ? screenWidth * 0.9 : (screenWidth > 1000 ? 900 : 700);
+    final shellHeight = isMobile ? size.height * 0.8 : size.height * 0.7;
+    double shellWidth = isMobile ? size.width * 0.9 : (size.width > 1000 ? 900 : 700);
 
-    // MOBILE: panel takes 40% height, form area 60% height.
-    // DESKTOP/TABLET: split width into ~45% panel / 55% form.
     final panelHeightMobile = shellHeight * 0.40;
     final formHeightMobile = shellHeight - panelHeightMobile;
 
-    final panelWidthWide =
-        (screenWidth > 800 ? 450.0 : shellWidth * 0.45); // ~45%
+    final panelWidthWide = (size.width > 800 ? 450.0 : shellWidth * 0.45);
     final formWidthWide = shellWidth - panelWidthWide;
 
     return Scaffold(
@@ -102,7 +112,7 @@ class _AuthpageState extends State<Authpage> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Center(
           child: AnimatedContainer(
-            clipBehavior: Clip.none,
+            clipBehavior: Clip.antiAlias,
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
             height: shellHeight,
@@ -113,13 +123,10 @@ class _AuthpageState extends State<Authpage> {
             ),
             child: Stack(
               children: [
-                // ---------- FORM AREA (positioned opposite to panel) ----------
                 if (isMobile)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    // If panel is at top (showSignUp = true), form starts below it.
-                    // If panel is at bottom, form starts at top.
                     top: showSignUp ? panelHeightMobile : 0,
                     left: 0,
                     right: 0,
@@ -127,27 +134,26 @@ class _AuthpageState extends State<Authpage> {
                     child: _FormShell(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 250),
-                        child:
-                            showSignUp
-                                ? SignUpForm(
-                                  name: name,
-                                  email: email,
-                                  password: password,
-                                  confirm: confirm,
-                                  border: border,
-                                  onSubmit: signup,
-                                )
-                                : SignInForm(
-                                  email: email,
-                                  password: password,
-                                  border: border,
-                                  onSubmit: signin,
-                                ),
+                        child: showSignUp
+                            ? SignUpForm(
+                                name: name,
+                                email: email,
+                                password: password,
+                                confirm: confirm,
+                                border: border,
+                                onSubmit: signup,
+                              )
+                            : SignInForm(
+                                email: email,
+                                password: password,
+                                border: border,
+                                onSubmit: signin,
+                                onMagicLink: signInWithSupabaseMagicLink,
+                              ),
                       ),
                     ),
                   )
                 else
-                  // WIDE: place form on the side opposite to the panel.
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
@@ -158,48 +164,40 @@ class _AuthpageState extends State<Authpage> {
                     child: _FormShell(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 250),
-                        child:
-                            showSignUp
-                                ? SignUpForm(
-                                  name: name,
-                                  email: email,
-                                  password: password,
-                                  confirm: confirm,
-                                  border: border,
-                                  onSubmit: signup,
-                                )
-                                : SignInForm(
-                                  email: email,
-                                  password: password,
-                                  border: border,
-                                  onSubmit: signin,
-                                ),
+                        child: showSignUp
+                            ? SignUpForm(
+                                name: name,
+                                email: email,
+                                password: password,
+                                confirm: confirm,
+                                border: border,
+                                onSubmit: signup,
+                              )
+                            : SignInForm(
+                                email: email,
+                                password: password,
+                                border: border,
+                                onSubmit: signin,
+                                onMagicLink: signInWithSupabaseMagicLink,
+                              ),
                       ),
                     ),
                   ),
 
-                // ---------- GRADIENT PANEL (slides) ----------
                 if (isMobile)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    // When showSignUp = true -> panel at top; false -> panel at bottom
                     top: showSignUp ? 0 : formHeightMobile,
                     left: 0,
                     right: 0,
                     height: panelHeightMobile,
                     child: GradientPanel(
                       title: showSignUp ? 'Welcome Back' : 'Hello Friend',
-                      subtitle:
-                          showSignUp
-                              ? 'To keep connected enter your details'
-                              : 'Enter your personal details',
+                      subtitle: showSignUp ? 'To keep connected enter your details' : 'Enter your personal details',
                       cta: showSignUp ? 'SIGN IN' : 'SIGN UP',
                       onTap: () => setState(() => showSignUp = !showSignUp),
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(20),
-                        bottom: Radius.circular(20),
-                      ),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
                     ),
                   )
                 else
@@ -208,21 +206,14 @@ class _AuthpageState extends State<Authpage> {
                     curve: Curves.easeInOut,
                     top: 0,
                     bottom: 0,
-                    // When showSignUp = true -> panel on the left; else on the right
                     left: showSignUp ? 0 : (shellWidth - panelWidthWide),
                     width: panelWidthWide,
                     child: GradientPanel(
                       title: showSignUp ? 'Welcome Back' : 'Hello Friend',
-                      subtitle:
-                          showSignUp
-                              ? 'To keep connected enter your details'
-                              : 'Enter your personal details',
+                      subtitle: showSignUp ? 'To keep connected enter your details' : 'Enter your personal details',
                       cta: showSignUp ? 'SIGN IN' : 'SIGN UP',
                       onTap: () => setState(() => showSignUp = !showSignUp),
-                      borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(20),
-                        right: Radius.circular(20),
-                      ),
+                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(20), right: Radius.circular(20)),
                     ),
                   ),
               ],
@@ -234,7 +225,6 @@ class _AuthpageState extends State<Authpage> {
   }
 }
 
-// ===== Decorative shells =====
 class _FormShell extends StatelessWidget {
   const _FormShell({required this.child});
   final Widget child;
@@ -243,7 +233,7 @@ class _FormShell extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: child,
       ),
     );

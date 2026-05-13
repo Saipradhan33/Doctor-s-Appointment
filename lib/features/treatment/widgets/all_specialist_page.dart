@@ -1,4 +1,4 @@
-import 'package:doct_appointment/widgets/main_navbar.dart';
+import 'package:doct_appointment/features/dashboard/widgets/main_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'specialist_page.dart';
